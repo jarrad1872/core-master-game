@@ -1,252 +1,128 @@
-/* Core Master - DMI Tools Corp */
-/* Mobile-first responsive design */
-
-:root {
-    --dmi-blue: #1a4b8c;
-    --dmi-orange: #f47920;
-    --dmi-white: #ffffff;
-    --dark-bg: #0a1628;
-    --concrete-gray: #4a5568;
-    --success-green: #48bb78;
-    --warning-red: #f56565;
-}
-
+/* Core Driller - DMI Tools Corp */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-    background: var(--dark-bg);
-    color: var(--dmi-white);
+    background: #1a1a2e;
+    font-family: 'Press Start 2P', monospace;
 }
 
-/* Loading Screen */
+#game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, #16213e 0%, #1a1a2e 50%, #0f0f1a 100%);
+}
+
+#game-container canvas {
+    max-width: 100%;
+    max-height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
 #loading-screen {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dmi-blue) 100%);
+    background: linear-gradient(180deg, #16213e 0%, #1a1a2e 50%, #0f0f1a 100%);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     z-index: 1000;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.5s ease;
 }
 
 #loading-screen.hidden {
     opacity: 0;
-    visibility: hidden;
+    pointer-events: none;
 }
 
-.loader-content {
+.loading-content {
     text-align: center;
-    padding: 20px;
+    color: #FF6B00;
 }
 
-.logo {
-    margin-bottom: 40px;
+.loading-content h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #FF6B00, 0 0 20px #FF6B00;
+    animation: pulse 1s ease-in-out infinite;
 }
 
-.drill-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
-    background: var(--dmi-orange);
-    border-radius: 50%;
-    position: relative;
-    animation: pulse 1.5s ease-in-out infinite;
+.drill-animation {
+    font-size: 4rem;
+    animation: spin 1s linear infinite;
+    margin: 20px 0;
 }
 
-.drill-icon::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30px;
-    background: var(--dmi-white);
-    border-radius: 50%;
-}
-
-.drill-icon::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    height: 60px;
-    background: var(--dmi-blue);
-    border-radius: 5px;
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
 }
 
-.logo h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: 3px;
-    margin-bottom: 8px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+.loading-content p {
+    font-size: 0.8rem;
+    color: #4FC3F7;
+    margin-bottom: 15px;
 }
 
-.tagline {
-    font-size: 1rem;
-    color: var(--dmi-orange);
-    font-weight: 500;
-}
-
-.progress-container {
+.loading-bar {
     width: 200px;
-    height: 8px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 4px;
-    margin: 0 auto 15px;
+    height: 20px;
+    background: #0f0f1a;
+    border: 3px solid #FF6B00;
+    margin: 0 auto;
     overflow: hidden;
 }
 
-.progress-bar {
-    height: 100%;
+.loading-fill {
     width: 0%;
-    background: linear-gradient(90deg, var(--dmi-orange), var(--success-green));
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.loading-text {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.7);
-}
-
-/* Game Container */
-#game-container {
-    width: 100%;
     height: 100%;
-    position: relative;
+    background: linear-gradient(90deg, #FF6B00, #FFB74D);
+    animation: load 2s ease-in-out forwards;
 }
 
-#game-container canvas {
-    display: block;
-    margin: 0 auto;
-    touch-action: none;
+@keyframes load {
+    0% { width: 0%; }
+    100% { width: 100%; }
 }
 
-/* Promo Banner */
-#promo-banner {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(90deg, var(--dmi-blue), var(--dmi-orange));
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    z-index: 100;
-    transform: translateY(0);
-    transition: transform 0.3s ease;
-}
-
-#promo-banner.hidden {
-    transform: translateY(100%);
-}
-
-.promo-text {
-    font-size: 0.9rem;
-    color: var(--dmi-white);
-}
-
-.promo-text strong {
-    color: #ffdd00;
-}
-
-.promo-link {
-    background: var(--dmi-white);
-    color: var(--dmi-blue);
-    padding: 8px 16px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: transform 0.2s ease;
-}
-
-.promo-link:hover {
-    transform: scale(1.05);
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 2rem;
+/* Mobile touch controls hint */
+@media (max-width: 768px) {
+    .loading-content h1 {
+        font-size: 1.2rem;
     }
     
-    .drill-icon {
-        width: 60px;
-        height: 60px;
+    .drill-animation {
+        font-size: 3rem;
     }
     
-    .drill-icon::after {
-        width: 8px;
-        height: 45px;
-    }
-    
-    #promo-banner {
-        flex-direction: column;
-        gap: 8px;
-        padding: 10px 15px;
-    }
-    
-    .promo-text {
-        font-size: 0.8rem;
+    .loading-content p {
+        font-size: 0.6rem;
     }
 }
 
-/* Landscape mobile */
-@media (max-height: 500px) and (orientation: landscape) {
-    .loader-content {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-    }
-    
-    .logo {
-        margin-bottom: 0;
-    }
-    
-    .drill-icon {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .logo h1 {
-        font-size: 1.5rem;
-    }
-}
-
-/* Prevent text selection during gameplay */
-#game-container * {
-    user-select: none;
+/* Prevent text selection */
+* {
     -webkit-user-select: none;
-}
-
-/* Safe area handling for notched phones */
-@supports (padding: max(0px)) {
-    #promo-banner {
-        padding-bottom: max(12px, env(safe-area-inset-bottom));
-    }
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }

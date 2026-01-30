@@ -3,48 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Core Master - Drill your way to the top! A game by DMI Tools Corp.">
-    <meta name="theme-color" content="#1a4b8c">
-    <title>Core Master | DMI Tools Corp</title>
-    
-    <!-- Preconnect for faster loading -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%231a4b8c'/><circle cx='50' cy='50' r='20' fill='%23f47920'/></svg>">
-    
-    <!-- Styles -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Core Driller - DMI Tools Corp</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Phaser 3 -->
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="loader-content">
-            <div class="logo">
-                <div class="drill-icon"></div>
-                <h1>CORE MASTER</h1>
-                <p class="tagline">by DMI Tools Corp</p>
+    <div id="game-container">
+        <div id="loading-screen">
+            <div class="loading-content">
+                <h1>CORE DRILLER</h1>
+                <div class="drill-animation">🔧</div>
+                <p>Loading...</p>
+                <div class="loading-bar">
+                    <div class="loading-fill"></div>
+                </div>
             </div>
-            <div class="progress-container">
-                <div class="progress-bar" id="load-progress"></div>
-            </div>
-            <p class="loading-text">Loading game...</p>
         </div>
     </div>
     
-    <!-- Game Container -->
-    <div id="game-container"></div>
-    
-    <!-- DMI Promo Banner (shown during gameplay) -->
-    <div id="promo-banner" class="hidden">
-        <span class="promo-text">🎉 Use code <strong>COREMASTER20</strong> for 20% off!</span>
-        <a href="https://dmitools.com" target="_blank" class="promo-link">Shop Now →</a>
-    </div>
-    
-    <!-- Game Script -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

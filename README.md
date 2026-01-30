@@ -1,142 +1,120 @@
-# Core Master 🎮
+# Core Driller 🔧
 
-An addictive drilling game by DMI Tools Corp. Drill through concrete, avoid rebar, earn cash, and upgrade to professional-grade equipment!
+**A DMI Tools Corp Game**
 
-## Quick Start
+A 2D side-scrolling action platformer where you play as a construction worker armed with a core drill! Blast through enemies with concrete cores and drill through walls to reach the finish line.
 
-### Option 1: Simple HTTP Server (Recommended)
+## 🎮 How to Play
+
+### Controls
+
+**Desktop:**
+- **Arrow Keys / WASD** - Move left/right
+- **Space / W** - Jump
+- **Mouse Click** - Shoot cores
+- **ESC** - Pause game
+
+**Mobile:**
+- **Left/Right Buttons** - Move
+- **Jump Button** - Jump  
+- **Tap Screen** - Shoot cores
+
+### Objective
+
+Navigate through construction sites, defeat enemies, drill through walls, and reach the finish flag at the end of each level. Complete all 3 levels to win!
+
+## 🎯 Gameplay Features
+
+### Your Character
+You're a construction worker equipped with a core drill machine. The drill shoots wall cores (cylindrical concrete slugs) at enemies.
+
+### Enemies
+- **Angry Homeowners** 👔 - Basic ground enemies (100 pts)
+- **Hard Hat Enemies** 🪖 - Flying enemies that track you (150 pts)
+- **Angry Foremen** 👷 - Tough enemies that shoot back (300 pts, 3 hits to kill)
+
+### Wall Drilling
+When you see an orange drill target on a wall:
+1. Walk into it and hold your direction
+2. Hold to drill through (progress bar fills)
+3. Wall destroyed! +500 bonus points
+
+### Power-Ups
+- ⚡ **Speed Boost** (Blue) - Faster fire rate for 10 seconds
+- 💥 **Big Cores** (Orange) - Larger, more powerful shots for 15 seconds
+- 🛡️ **Shield** (Green) - Safety glasses protect from one hit
+- ❤️ **Health** (Red) - +1 life (max 5)
+
+### Obstacles
+- **Rebar** - Rusty metal spikes sticking up
+- **Pipes** - PVC pipes to jump over
+- Touch an obstacle = damage!
+
+## 📊 Scoring
+
+| Action | Points |
+|--------|--------|
+| Homeowner kill | 100 |
+| Hard Hat kill | 150 |
+| Foreman kill | 300 |
+| Power-up collected | 50 |
+| Wall drilled | 500 |
+| Life bonus (per life at level end) | 500 |
+
+High scores are saved locally!
+
+## 🏗️ Levels
+
+1. **Construction Site** - Easy introduction (3200px)
+2. **The Basement** - More enemies, more obstacles (4000px)  
+3. **Boss Site** - Maximum challenge! (4800px)
+
+## 🛠️ Technical Details
+
+- **Engine:** Phaser 3.70
+- **Resolution:** 800x480 (scales to fit)
+- **Mobile Support:** Touch controls, responsive design
+- **Audio:** Procedurally generated sound effects
+- **Graphics:** All sprites generated at runtime (no external assets)
+
+## 🚀 Running Locally
+
+Simply serve the files with any HTTP server:
 
 ```bash
-cd /home/node/clawd/projects/dmi-drill-game/src
+# Using Python
+python -m http.server 8000
 
-# Using Python 3
-python3 -m http.server 8080
+# Using Node.js
+npx serve .
 
-# Or using Node.js (if http-server is installed)
-npx http-server -p 8080
-
-# Or using PHP
-php -S localhost:8080
+# Using PHP
+php -S localhost:8000
 ```
 
-Then open: http://localhost:8080
+Then open `http://localhost:8000` in your browser.
 
-### Option 2: Open Directly
+## 🎨 Visual Style
 
-Most browsers will run the game by opening `index.html` directly, but some features may not work due to CORS restrictions.
+- Pixel art aesthetic with clean 2D sprites
+- DMI brand colors: Orange (#FF6B00) and Blue (#4FC3F7)
+- Construction site theme throughout
+- Fun and cartoony but not childish
 
-### Option 3: Live Server (VS Code)
+## 📱 Mobile Optimization
 
-If using VS Code, install the "Live Server" extension and click "Go Live" with index.html open.
+- Responsive scaling to any screen size
+- Touch-friendly control buttons
+- Optimized for portrait and landscape
+- Fast loading (no external assets to download)
 
-## Game Controls
+## 🔗 Links
 
-- **Mobile/Touch**: Hold anywhere to drill
-- **Desktop**: Click and hold to drill
-
-### Gameplay Tips
-
-1. **Pressure Control**: Keep the pressure gauge in the GREEN zone for max speed
-2. **Avoid Overheating**: Going too fast (red zone) builds heat - overheat = temporary stop
-3. **Watch for Rebar**: Brown bars are rebar - hitting them breaks your combo
-4. **Build Combos**: Stay in the sweet spot to build combo multipliers for bonus cash
-
-## Features
-
-### MVP (Current Build)
-- ✅ Core drilling mechanic with pressure control
-- ✅ 3 equipment tiers (Basic → Pro → Laser Welded)
-- ✅ 4 job types with increasing difficulty
-- ✅ XP and level progression
-- ✅ Currency system for upgrades
-- ✅ Shop with real DMI product links
-- ✅ Procedural audio (drill sounds, effects)
-- ✅ Particle effects and screen shake
-- ✅ Mobile-responsive design
-- ✅ Local save/load progress
-
-### DMI Integration
-- Equipment mapped to real DMI products
-- Direct links to dmitools.com
-- Promo code system (COREMASTER20 etc.)
-- Real product prices displayed
-
-## Technical Details
-
-### Stack
-- **Engine**: Phaser.js 3.70
-- **Audio**: Web Audio API (procedural)
-- **Storage**: localStorage
-- **Assets**: All generated programmatically (no external files needed)
-
-### Performance
-- Bundle: < 500KB (Phaser CDN)
-- First playable: < 3 seconds
-- 60fps on mobile devices
-- Works offline after first load
-
-### Browser Support
-- Chrome 90+
-- Safari 14+
-- Firefox 90+
-- Edge 90+
-
-## File Structure
-
-```
-src/
-├── index.html      # Entry point
-├── game.js         # All game logic (Phaser scenes)
-├── styles.css      # Mobile-first styling
-├── assets/         # (Textures generated in code)
-└── README.md       # This file
-```
-
-## Customization
-
-### Promo Codes
-Edit the promo codes in `game.js` and `index.html`:
-- COREMASTER10 (starter)
-- COREMASTER20 (mid-game)
-- COREMASTER25 (high-level)
-
-### Equipment
-Modify the `EQUIPMENT` object in `game.js` to:
-- Change prices/stats
-- Update real product URLs
-- Add new equipment tiers
-
-### Jobs
-Modify the `JOBS` array to:
-- Adjust difficulty/rewards
-- Add new job types
-- Change unlock requirements
-
-## Deployment
-
-### Cloudflare Pages (Recommended)
-1. Push to GitHub
-2. Connect repo to Cloudflare Pages
-3. Build command: (none needed)
-4. Output directory: `src`
-
-### Any Static Host
-Simply upload the `src` folder contents to any static hosting:
-- Netlify
-- Vercel
-- GitHub Pages
-- S3 + CloudFront
-
-## Analytics (TODO)
-
-For production, add tracking:
-- Mixpanel/Amplitude for funnel analysis
-- Track: game_start, level_up, shop_view, product_click, purchase
-
-## License
-
-Proprietary - DMI Tools Corp
+- [Shop Real Core Drill Bits](https://dmitools.com/collections/core-drill-bits) - Available in pause menu and game over screen
+- [DMI Tools Corp](https://dmitools.com) - Professional diamond tools
 
 ---
 
-Made with 🔧 for concrete professionals
+**Made with 💪 by DMI Tools Corp**
+
+*"Drill through the competition!"*
