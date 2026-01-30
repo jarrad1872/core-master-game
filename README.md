@@ -1,120 +1,147 @@
-# Core Driller 🔧
+# Core Driller v3 - DMI Tools Corp
 
-**A DMI Tools Corp Game**
-
-A 2D side-scrolling action platformer where you play as a construction worker armed with a core drill! Blast through enemies with concrete cores and drill through walls to reach the finish line.
+A polished, professional-grade 2D side-scrolling run-and-gun platformer featuring DMI Tools Corp branding and real core drilling industry themes.
 
 ## 🎮 How to Play
 
-### Controls
+### Desktop Controls
+- **WASD / Arrow Keys** - Move
+- **Space** - Jump (hold for higher jump)
+- **Click** - Shoot concrete cores
+- **Down Arrow** - Fast fall
+- **ESC** - Pause
 
-**Desktop:**
-- **Arrow Keys / WASD** - Move left/right
-- **Space / W** - Jump
-- **Mouse Click** - Shoot cores
-- **ESC** - Pause game
+### Mobile Controls
+- **Left side of screen** - Touch & drag to move
+- **Right side (lower)** - Tap to shoot
+- **Right side (upper)** - Tap to jump
 
-**Mobile:**
-- **Left/Right Buttons** - Move
-- **Jump Button** - Jump  
-- **Tap Screen** - Shoot cores
+## 🔧 Features
 
-### Objective
+### The DMI Core Drill
+The player character wields a recognizable DMI CD20A core drill:
+- Silver/white motor body with red "DMI" logo
+- Black diamond core bit with silver segments at tip
+- Shoots concrete "cores" as projectiles
 
-Navigate through construction sites, defeat enemies, drill through walls, and reach the finish flag at the end of each level. Complete all 3 levels to win!
+### Enemies (from the core drilling industry)
+1. **Angry Homeowners** - Upset about mess/noise, throw household objects
+2. **Impatient Foremen** - Blow whistles that shoot "complaint" projectiles
+3. **Building Inspectors** - Throw violation papers in spreads
+4. **Flying Hard Hats** - Possessed PPE that swoops down to attack
 
-## 🎯 Gameplay Features
+### Power-Ups (real DMI products)
+1. **Slurry Ring** (🛡️) - Shield that absorbs 3 hits
+2. **Bit Extension** (R) - Increases projectile range by 80%
+3. **Sharpening Block** (D) - Doubles damage for 8 seconds
+4. **Anchors** (I) - Temporary invincibility for 8 seconds
+5. **Health** - Restores 1 HP
 
-### Your Character
-You're a construction worker equipped with a core drill machine. The drill shoots wall cores (cylindrical concrete slugs) at enemies.
+### Polish Features
+- ✨ Screen shake on impacts
+- 🎆 Particle systems (muzzle flash, impacts, explosions, dust)
+- 💥 Hit flash on damage
+- 🎵 Procedural audio (Web Audio API)
+- 🏞️ Parallax scrolling backgrounds
+- 📱 Mobile-optimized touch controls
+- 🎮 Variable jump height (hold for higher)
+- ⏱️ Coyote time & jump buffering
 
-### Enemies
-- **Angry Homeowners** 👔 - Basic ground enemies (100 pts)
-- **Hard Hat Enemies** 🪖 - Flying enemies that track you (150 pts)
-- **Angry Foremen** 👷 - Tough enemies that shoot back (300 pts, 3 hits to kill)
+## 🏃 Running the Game
 
-### Wall Drilling
-When you see an orange drill target on a wall:
-1. Walk into it and hold your direction
-2. Hold to drill through (progress bar fills)
-3. Wall destroyed! +500 bonus points
-
-### Power-Ups
-- ⚡ **Speed Boost** (Blue) - Faster fire rate for 10 seconds
-- 💥 **Big Cores** (Orange) - Larger, more powerful shots for 15 seconds
-- 🛡️ **Shield** (Green) - Safety glasses protect from one hit
-- ❤️ **Health** (Red) - +1 life (max 5)
-
-### Obstacles
-- **Rebar** - Rusty metal spikes sticking up
-- **Pipes** - PVC pipes to jump over
-- Touch an obstacle = damage!
-
-## 📊 Scoring
-
-| Action | Points |
-|--------|--------|
-| Homeowner kill | 100 |
-| Hard Hat kill | 150 |
-| Foreman kill | 300 |
-| Power-up collected | 50 |
-| Wall drilled | 500 |
-| Life bonus (per life at level end) | 500 |
-
-High scores are saved locally!
-
-## 🏗️ Levels
-
-1. **Construction Site** - Easy introduction (3200px)
-2. **The Basement** - More enemies, more obstacles (4000px)  
-3. **Boss Site** - Maximum challenge! (4800px)
-
-## 🛠️ Technical Details
-
-- **Engine:** Phaser 3.70
-- **Resolution:** 800x480 (scales to fit)
-- **Mobile Support:** Touch controls, responsive design
-- **Audio:** Procedurally generated sound effects
-- **Graphics:** All sprites generated at runtime (no external assets)
-
-## 🚀 Running Locally
-
-Simply serve the files with any HTTP server:
-
+### Option 1: Python HTTP Server
 ```bash
-# Using Python
-python -m http.server 8000
-
-# Using Node.js
-npx serve .
-
-# Using PHP
-php -S localhost:8000
+cd src-v3
+python3 -m http.server 8000
+# Open http://localhost:8000
 ```
 
-Then open `http://localhost:8000` in your browser.
+### Option 2: Node.js HTTP Server
+```bash
+cd src-v3
+npx serve .
+# Or: npx http-server .
+```
 
-## 🎨 Visual Style
+### Option 3: Direct File
+Just open `index.html` in a modern browser (Chrome, Firefox, Safari, Edge).
 
-- Pixel art aesthetic with clean 2D sprites
-- DMI brand colors: Orange (#FF6B00) and Blue (#4FC3F7)
-- Construction site theme throughout
-- Fun and cartoony but not childish
+## 🎯 Game Mechanics
 
-## 📱 Mobile Optimization
+### Physics
+- Variable jump (0.25s hold time for full height)
+- Coyote time (0.12s grace period after leaving platform)
+- Jump buffering (0.1s before landing)
+- Fast fall (hold down while airborne)
 
-- Responsive scaling to any screen size
-- Touch-friendly control buttons
-- Optimized for portrait and landscape
-- Fast loading (no external assets to download)
+### Combat
+- Shoot cooldown: 0.25s
+- Projectile speed: 600 px/s
+- Invincibility after hit: 1.5s
 
-## 🔗 Links
+### Waves
+- Enemies scale with wave number
+- Power-ups spawn between waves
+- Enemy mix shifts to harder types in later waves
 
-- [Shop Real Core Drill Bits](https://dmitools.com/collections/core-drill-bits) - Available in pause menu and game over screen
-- [DMI Tools Corp](https://dmitools.com) - Professional diamond tools
+## 📁 File Structure
+
+```
+src-v3/
+├── index.html    # Main HTML with styles
+├── game.js       # Complete game engine (~2500 lines)
+└── README.md     # This file
+```
+
+## 🎨 Art Style
+
+All graphics are programmatically generated using Canvas 2D:
+- Chunky pixel art aesthetic
+- DMI brand colors (Orange #FF6B00, Blue #4FC3F7)
+- Construction site theme (safety yellow, concrete gray)
+- Bold black outlines for readability
+
+## 🔊 Audio
+
+Procedural sound generation using Web Audio API:
+- Drill shoot (whoosh-thunk)
+- Impact sounds (concrete)
+- Enemy deaths (explosions)
+- Power-up pickups (rising melody)
+- Jump sounds
+- Hurt sounds
+
+## 📱 Mobile Support
+
+- Responsive canvas scaling
+- Touch control zones (invisible by default)
+- Larger hitboxes for touch accuracy
+- Haptic feedback ready (if enabled)
+
+## 🎮 Game Loop
+
+1. **Menu** → Start Game
+2. **Wave Announcement** → 3 second countdown
+3. **Spawn Enemies** → Based on wave difficulty
+4. **Combat** → Shoot enemies, collect power-ups
+5. **Wave Complete** → Bonus power-up, next wave
+6. **Game Over** → High score saved to localStorage
+
+## 💡 Tips
+
+- Use platforms for tactical advantage
+- Flying Hard Hats telegraph their swoop - dodge sideways
+- Foremen shoot in patterns - jump between shots
+- Inspectors are tanky but slow
+- Shield is the best defensive power-up
+- Damage boost + Range boost = devastating combo
+
+## 🏢 Credits
+
+**DMI Tools Corp** - The real heroes of the core drilling industry
+
+Built with ❤️ and pure JavaScript (no external dependencies)
 
 ---
 
-**Made with 💪 by DMI Tools Corp**
-
-*"Drill through the competition!"*
+*"Every time the player drills, it should feel satisfying."*

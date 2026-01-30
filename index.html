@@ -2,29 +2,257 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Core Driller - DMI Tools Corp</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Core Driller v3 - DMI Tools Corp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #1a1a2e;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        #gameContainer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        #gameCanvas {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            background: #87CEEB;
+        }
+        
+        #startScreen, #gameOverScreen, #pauseScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(26, 26, 46, 0.95);
+            z-index: 100;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .title {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 900;
+            color: #FF6B00;
+            text-shadow: 4px 4px 0 #000, -2px -2px 0 #FFD700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -2px;
+        }
+        
+        .subtitle {
+            font-size: clamp(0.8rem, 3vw, 1.2rem);
+            color: #4FC3F7;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(180deg, #FF6B00 0%, #CC5500 100%);
+            border: 4px solid #FFD700;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 0 #8B4500, 0 8px 15px rgba(0,0,0,0.3);
+            transition: all 0.1s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #8B4500, 0 10px 20px rgba(0,0,0,0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #8B4500, 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .controls-info {
+            margin-top: 2rem;
+            color: #aaa;
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            text-align: center;
+            line-height: 1.8;
+        }
+        
+        .controls-info strong {
+            color: #FFD700;
+        }
+        
+        .score-display {
+            font-size: clamp(1.5rem, 6vw, 3rem);
+            color: #FFD700;
+            margin: 1rem 0;
+        }
+        
+        .high-score {
+            color: #4FC3F7;
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            margin-bottom: 2rem;
+        }
+        
+        #mobileControls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .touch-zone {
+            position: absolute;
+            pointer-events: auto;
+        }
+        
+        #moveZone {
+            left: 0;
+            bottom: 0;
+            width: 40%;
+            height: 100%;
+        }
+        
+        #actionZone {
+            right: 0;
+            bottom: 0;
+            width: 40%;
+            height: 100%;
+        }
+        
+        #jumpZone {
+            right: 20%;
+            bottom: 0;
+            width: 20%;
+            height: 50%;
+        }
+        
+        .dpad {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 120px;
+            height: 120px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .action-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(79, 195, 247, 0.3);
+            border: 3px solid rgba(79, 195, 247, 0.6);
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .jump-btn {
+            bottom: 120px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 107, 0, 0.3);
+            border: 3px solid rgba(255, 107, 0, 0.6);
+        }
+        
+        @media (min-width: 800px) {
+            #mobileControls {
+                display: none;
+            }
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FF6B00;
+            font-size: 1.5rem;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="loading-screen">
-            <div class="loading-content">
-                <h1>CORE DRILLER</h1>
-                <div class="drill-animation">🔧</div>
-                <p>Loading...</p>
-                <div class="loading-bar">
-                    <div class="loading-fill"></div>
-                </div>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="startScreen">
+            <div class="title">CORE DRILLER</div>
+            <div class="subtitle">DMI Tools Corp</div>
+            <button class="btn" id="startBtn">START GAME</button>
+            <div class="controls-info">
+                <strong>Desktop:</strong> WASD/Arrows to move • Space to jump • Click to shoot<br>
+                <strong>Mobile:</strong> Left side = move • Right side = shoot • Tap right-top = jump
             </div>
+        </div>
+        
+        <div id="gameOverScreen" class="hidden">
+            <div class="title" style="font-size: clamp(1.5rem, 6vw, 3rem);">GAME OVER</div>
+            <div class="score-display">Score: <span id="finalScore">0</span></div>
+            <div class="high-score">High Score: <span id="highScore">0</span></div>
+            <button class="btn" id="restartBtn">PLAY AGAIN</button>
+        </div>
+        
+        <div id="pauseScreen" class="hidden">
+            <div class="title" style="font-size: clamp(1.5rem, 6vw, 2.5rem);">PAUSED</div>
+            <button class="btn" id="resumeBtn">RESUME</button>
+        </div>
+        
+        <div id="mobileControls">
+            <div id="moveZone" class="touch-zone"></div>
+            <div id="actionZone" class="touch-zone"></div>
+            <div id="jumpZone" class="touch-zone"></div>
+            <div class="dpad" id="dpadVisual">
+                <svg viewBox="0 0 120 120" width="120" height="120">
+                    <rect x="40" y="0" width="40" height="120" rx="8" fill="rgba(255,255,255,0.2)"/>
+                    <rect x="0" y="40" width="120" height="40" rx="8" fill="rgba(255,255,255,0.2)"/>
+                </svg>
+            </div>
+            <div class="action-btn" id="shootBtnVisual">🔫</div>
+            <div class="action-btn jump-btn" id="jumpBtnVisual">↑</div>
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
