@@ -320,14 +320,31 @@ class BootScene extends Phaser.Scene {
     createTextures() {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
-        // Drill bit texture
+        // Drill bit texture with visible diamond segments for rotation
         g.clear();
+        // Outer ring (steel body)
+        g.fillStyle(0x4a5568);
+        g.fillCircle(32, 32, 30);
+        // Diamond segment ring
         g.fillStyle(DMI_COLORS.orange);
         g.fillCircle(32, 32, 28);
+        // Draw 8 diamond segments (visible teeth)
+        g.fillStyle(0xb8860b); // darker gold for segments
+        for (let i = 0; i < 8; i++) {
+            const angle = (i * Math.PI * 2) / 8;
+            const x = 32 + Math.cos(angle) * 22;
+            const y = 32 + Math.sin(angle) * 22;
+            g.fillRect(x - 4, y - 3, 8, 6);
+        }
+        // Inner cutting edge
         g.fillStyle(DMI_COLORS.blue);
-        g.fillCircle(32, 32, 12);
-        g.fillStyle(DMI_COLORS.white);
-        g.fillCircle(32, 32, 4);
+        g.fillCircle(32, 32, 14);
+        // Center bore hole (where core goes)
+        g.fillStyle(0x1a1a2e);
+        g.fillCircle(32, 32, 8);
+        // Highlight
+        g.fillStyle(0xffffff, 0.3);
+        g.fillCircle(26, 26, 4);
         g.generateTexture('drillBit', 64, 64);
 
         // Concrete texture
@@ -770,19 +787,55 @@ class GameScene extends Phaser.Scene {
             color: '#718096'
         });
 
-        // Pressure gauge (right side)
-        this.add.text(width - 80, 15, 'PRESSURE', {
-            fontSize: '12px',
+        // Circular Pressure gauge (right side) - more intuitive arc design
+        const gaugeX = width - 60;
+        const gaugeY = 100;
+        const gaugeRadius = 45;
+        
+        // Label
+        this.add.text(gaugeX, gaugeY - gaugeRadius - 20, 'PRESSURE', {
+            fontSize: '11px',
             fontFamily: 'Arial, sans-serif',
             color: '#a0aec0'
-        });
-
-        this.pressureBar = this.add.rectangle(width - 30, 40, 15, 150, 0x2d3748).setOrigin(0.5, 0);
-        this.pressureFill = this.add.rectangle(width - 30, 190, 15, 0, DMI_COLORS.blue).setOrigin(0.5, 1);
+        }).setOrigin(0.5);
         
-        // Sweet spot indicator
-        this.sweetSpot = this.add.rectangle(width - 30, 100, 20, 30, DMI_COLORS.success, 0.3)
-            .setStrokeStyle(2, DMI_COLORS.success);
+        // Background arc
+        this.pressureArcBg = this.add.graphics();
+        this.pressureArcBg.lineStyle(12, 0x2d3748, 1);
+        this.pressureArcBg.arc(gaugeX, gaugeY, gaugeRadius, Phaser.Math.DegToRad(135), Phaser.Math.DegToRad(405), false);
+        this.pressureArcBg.strokePath();
+        
+        // Sweet spot zone (green arc at 50-80% = 135° + 270° * 0.5 to 0.8)
+        this.pressureSweetSpot = this.add.graphics();
+        this.pressureSweetSpot.lineStyle(14, DMI_COLORS.success, 0.4);
+        this.pressureSweetSpot.arc(gaugeX, gaugeY, gaugeRadius, 
+            Phaser.Math.DegToRad(135 + 270 * 0.5), 
+            Phaser.Math.DegToRad(135 + 270 * 0.8), false);
+        this.pressureSweetSpot.strokePath();
+        
+        // Active pressure arc (will be updated)
+        this.pressureArc = this.add.graphics();
+        
+        // Center text
+        this.pressureText = this.add.text(gaugeX, gaugeY + 5, '0%', {
+            fontSize: '16px',
+            fontFamily: 'Arial Black, sans-serif',
+            color: '#ffffff'
+        }).setOrigin(0.5);
+        
+        // Labels for zones
+        this.add.text(gaugeX - gaugeRadius - 5, gaugeY + 20, 'LOW', {
+            fontSize: '8px', color: '#718096'
+        }).setOrigin(1, 0.5);
+        this.add.text(gaugeX + gaugeRadius + 5, gaugeY + 20, 'HOT', {
+            fontSize: '8px', color: '#f56565'
+        }).setOrigin(0, 0.5);
+        this.add.text(gaugeX, gaugeY + gaugeRadius + 10, '⚡ SWEET SPOT', {
+            fontSize: '9px', color: '#48bb78'
+        }).setOrigin(0.5);
+        
+        // Store gauge config for updates
+        this.gaugeConfig = { x: gaugeX, y: gaugeY, radius: gaugeRadius };
 
         // Heat indicator
         this.add.text(width - 80, 200, 'HEAT', {
@@ -871,9 +924,13 @@ class GameScene extends Phaser.Scene {
             // Apply combo multiplier
             drillSpeed *= (1 + (this.combo - 1) * 0.2);
 
-            // Play drill sound
+            // Play drill sound + haptic feedback
             if (time % 100 < 20) {
                 soundManager.playDrill(this.pressure);
+                // Haptic feedback on mobile
+                if (navigator.vibrate) {
+                    navigator.vibrate(inSweetSpot ? [15, 10, 15] : [10]);
+                }
             }
         }
 
@@ -892,6 +949,8 @@ class GameScene extends Phaser.Scene {
         if (this.heat >= 1) {
             soundManager.playOverheat();
             this.cameras.main.shake(200, 0.01);
+            // Strong haptic buzz for overheat
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 100]);
             this.heat = 0.5;
         }
 
@@ -920,9 +979,10 @@ class GameScene extends Phaser.Scene {
             this.drillBit.rotation = 0;
         }
 
-        // Drill bit rotation
-        if (this.drilling) {
-            this.drillBit.rotation += dt * 10 * this.pressure;
+        // Drill bit rotation - continuous spin based on pressure
+        if (this.drilling && this.pressure > 0.1) {
+            // Faster rotation at higher pressure, very visible spin
+            this.drillBit.rotation += dt * 15 * (0.5 + this.pressure);
         }
 
         // Check win condition
@@ -968,6 +1028,8 @@ class GameScene extends Phaser.Scene {
         
         soundManager.playHitRebar();
         this.cameras.main.shake(300, 0.02);
+        // Strong haptic for rebar collision
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         
         // Sparks
         this.sparks.setPosition(obstacle.x, obstacle.sprite.y);
@@ -1004,17 +1066,32 @@ class GameScene extends Phaser.Scene {
         const depthPercent = this.depth / this.targetDepth;
         this.depthProgress.height = (height - 100) * depthPercent;
 
-        // Pressure
-        this.pressureFill.height = this.pressure * 150;
+        // Pressure - circular arc gauge
+        this.pressureArc.clear();
+        const { x: gx, y: gy, radius: gr } = this.gaugeConfig;
+        const startAngle = 135;
+        const endAngle = startAngle + (270 * this.pressure);
         
-        // Color pressure bar based on zone
+        // Color based on zone
+        let arcColor = DMI_COLORS.blue;
         if (this.pressure >= 0.5 && this.pressure <= 0.8) {
-            this.pressureFill.setFillStyle(DMI_COLORS.success);
+            arcColor = DMI_COLORS.success;
         } else if (this.pressure > 0.8) {
-            this.pressureFill.setFillStyle(DMI_COLORS.warning);
-        } else {
-            this.pressureFill.setFillStyle(DMI_COLORS.blue);
+            arcColor = DMI_COLORS.warning;
         }
+        
+        this.pressureArc.lineStyle(12, arcColor, 1);
+        if (this.pressure > 0.01) {
+            this.pressureArc.arc(gx, gy, gr, 
+                Phaser.Math.DegToRad(startAngle), 
+                Phaser.Math.DegToRad(endAngle), false);
+            this.pressureArc.strokePath();
+        }
+        
+        // Update center text
+        this.pressureText.setText(Math.floor(this.pressure * 100) + '%');
+        this.pressureText.setColor(arcColor === DMI_COLORS.success ? '#48bb78' : 
+                                   arcColor === DMI_COLORS.warning ? '#f56565' : '#ffffff');
 
         // Heat
         this.heatFill.height = this.heat * 80;
